@@ -15,10 +15,7 @@ const getRndInteger = function (min, max) {
 };
 
 const checkStringLength = function (string, maxLength) {
-  if (string.length > maxLength) {
-    return false;
-  }
-  return true;
+  return string.length > maxLength;
 };
 
 getRndInteger(1, 9);
