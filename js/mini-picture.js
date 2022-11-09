@@ -29,3 +29,4 @@ function renderUsersPictures(usersPicturesData) {
 const usersPicturesMockData = generatePhotos();
 
 renderUsersPictures(usersPicturesMockData);
+export {renderUsersPictures };
