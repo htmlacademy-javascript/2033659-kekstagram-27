@@ -1,3 +1,10 @@
+const ESC_KEY_CODE = 27;
+const onModalEscKeydown = (event) => {
+  if (event.keyCode === ESC_KEY_CODE) {
+    closeBigPicture(event);
+  }
+};
+
 function createComment ({avatar, message, name}) {
   const commentElement = document.createElement('li');
   const avatarElement = document.createElement('img');
@@ -51,11 +58,7 @@ function openBigPicture ({url, likes, comments, description}) {
   renderComments(comments);
   bodyElement.classList.add('modal-open');
   closeBigPictureButton.addEventListener('click', closeBigPicture);
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' || event.key === 'Esc' || event.keyCode === 27) {
-      closeBigPicture(event);
-    }
-  });
+  document.addEventListener('keydown', onModalEscKeydown);
   bigPictureOverlay.classList.remove('hidden');
 }
 
@@ -73,6 +76,7 @@ function closeBigPicture (event) {
   bodyElement.classList.remove('modal-open');
   bigPictureOverlay.classList.add('hidden');
   closeBigPictureButton.removeEventListener('click', closeBigPicture);
+  closeBigPictureButton.removeEventListener('keydown', onModalEscKeydown);
 }
 
 export { openBigPicture };
