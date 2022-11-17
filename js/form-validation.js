@@ -1,5 +1,18 @@
 const uploadForm = document.querySelector('.img-upload__form');
 const pristine = new Pristine(uploadForm);
+const HASHTAG_INPUT_VALUE_MAX_LENGTH = 420;
+const HASHTAG_LIST_MAX_LENGTH = 20;
+
+function validateMaxLength (value, maxLength) {
+  return value <= maxLength;
+}
+
+function hashtagListValidate (hashtagList) {
+  return hashtagList.reduce(
+    (isHashtagValid, hashtag) => validateHashtag(hashtag) && isHashtagValid,
+    true
+  );
+}
 
 function validateHashtag (hashtag) {
   const hashtagRegex = /^#[a-zа-яё0-9]{1,19}$/i;
@@ -27,16 +40,10 @@ function validateHashtagInputValue (inputValue = '') {
   const hashtagList = inputValueLowerCase.trim().split(' ');
 
   return (
-    inputValue.length < 420
-    && hashtagList.length <= 20
+    validateMaxLength(inputValue.length, HASHTAG_INPUT_VALUE_MAX_LENGTH)
+    && validateMaxLength(hashtagList.length, HASHTAG_LIST_MAX_LENGTH)
     && areLstItemsUniq(hashtagList)
-    && hashtagList.reduce((isHashtagValid, hashtag) => {
-      if (validateHashtag(hashtag) && isHashtagValid) {
-        return true;
-      } else {
-        return false;
-      }
-    }, true)
+    && hashtagListValidate(hashtagList)
   );
 }
 
