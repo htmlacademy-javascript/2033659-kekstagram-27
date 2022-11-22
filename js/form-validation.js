@@ -1,4 +1,9 @@
+import { submitData } from './api.js';
+import { showErrorMessage, showSuccessMessage } from './util.js';
+import { closeImageForm } from './user-form.js';
+
 const uploadForm = document.querySelector('.img-upload__form');
+const submitButton = uploadForm.querySelector('.img-upload__submit');
 const pristine = new Pristine(uploadForm);
 const HASHTAG_INPUT_VALUE_MAX_LENGTH = 420;
 const HASHTAG_LIST_MAX_LENGTH = 20;
@@ -56,15 +61,35 @@ pristine.addValidator(
   (value) => value.length <= 140
 );
 
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
 uploadForm.addEventListener('submit', (evt) => {
-  //evt.preventDefault();
+  evt.preventDefault();
 
   const isValid = pristine.validate();
   if (isValid) {
-    console.log('Можно отправлять');
-  } else {
-    evt.preventDefault();
-    console.log('Форма невалидна');
+    blockSubmitButton();
+    submitData(
+      '',
+      new FormData(evt.target),
+      () => {
+        unblockSubmitButton();
+        closeImageForm();
+        showSuccessMessage();
+      },
+      () => {
+        showErrorMessage();
+        unblockSubmitButton();
+      },
+    );
   }
 });
 

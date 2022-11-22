@@ -7,8 +7,7 @@ const uploadForm = document.querySelector('.img-upload__form');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const changeEvent = new Event('change');
 
-const closeImageForm = (evt) => {
-  evt.preventDefault();
+const closeImageForm = () => {
   const imgUploadOverlay = document.querySelector('.img-upload__overlay');
   const bodyElement = document.querySelector('body');
   const closeModalButton = imgUploadOverlay.querySelector('.img-upload__cancel');
@@ -24,6 +23,9 @@ const closeImageForm = (evt) => {
   scaleValueElement.removeEventListener('change', imageUpdateScale);
   closeModalButton.removeEventListener('click', closeImageForm);
   document.removeEventListener('keydown', onModalEscKeydown);
+  imgUploadOverlay.querySelector('.text__hashtags').value = '';
+  imgUploadOverlay.querySelector('.text__description').value = '';
+  imgUploadOverlay.querySelector('.effects__radio[value="none"]').click();
 
   imgUploadOverlay.classList.add('hidden');
   bodyElement.classList.remove('modal-open');
@@ -87,3 +89,4 @@ function stopEscapeForInput (evt) {
 uploadForm.querySelector('.text__hashtags').addEventListener('keydown', stopEscapeForInput);
 uploadForm.querySelector('.text__description').addEventListener('keydown', stopEscapeForInput);
 
+export { closeImageForm };

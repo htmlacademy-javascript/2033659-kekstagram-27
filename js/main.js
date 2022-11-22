@@ -1,7 +1,5 @@
-import { generatePhotos } from './data.js';
 import { renderUsersPictures } from './mini-picture.js';
+import { getData } from './api.js';
 import './user-form.js';
 
-const usersPicturesData = generatePhotos();
-renderUsersPictures(usersPicturesData);
-generatePhotos(25);
+getData('/data', renderUsersPictures, alert);

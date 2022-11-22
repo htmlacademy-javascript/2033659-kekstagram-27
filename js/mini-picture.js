@@ -1,4 +1,3 @@
-import { generatePhotos } from './data.js';
 import { openBigPicture } from './big-picture.js';
 
 const usersPicturesList = document.querySelector('.pictures');
@@ -34,7 +33,4 @@ function renderUsersPictures(usersPicturesData) {
   usersPicturesList.appendChild(picturesListFragmentFilled);
 }
 
-const usersPicturesMockData = generatePhotos();
-
-renderUsersPictures(usersPicturesMockData);
-export {renderUsersPictures };
+export { renderUsersPictures };
