@@ -3,9 +3,11 @@ import { initSlider, resetEffect } from './slider.js';
 import { plusSize, minusSize, imageUpdateScale } from './image-scale.js';
 
 const ESC_KEY_CODE = 27;
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const changeEvent = new Event('change');
+const imagePreviewElement = document.querySelector('.img-upload__preview img');
 
 const closeImageForm = () => {
   const imgUploadOverlay = document.querySelector('.img-upload__overlay');
@@ -75,8 +77,16 @@ function onModalEscKeydown (event) {
 }
 
 function onInputFileChange () {
-  openImageForm();
-  uploadInput.removeEventListener('change', onInputFileChange);
+  const file = uploadInput.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    imagePreviewElement.src = URL.createObjectURL(file);
+    openImageForm();
+    uploadInput.removeEventListener('change', onInputFileChange);
+  }
 }
 
 uploadInput.addEventListener('change', onInputFileChange);
