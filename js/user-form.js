@@ -1,15 +1,15 @@
 import './form-validation.js';
 import { initSlider, resetEffect } from './slider.js';
-import { plusSize, minusSize, imageUpdateScale } from './image-scale.js';
+import { onPlusSize, onMinusSize, onImageUpdateScale } from './image-scale.js';
+import { ESC_KEY_CODE } from './util.js';
 
-const ESC_KEY_CODE = 27;
 const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const changeEvent = new Event('change');
 const imagePreviewElement = document.querySelector('.img-upload__preview img');
 
-const closeImageForm = () => {
+const onCloseImageForm = () => {
   const imgUploadOverlay = document.querySelector('.img-upload__overlay');
   const bodyElement = document.querySelector('body');
   const closeModalButton = imgUploadOverlay.querySelector('.img-upload__cancel');
@@ -20,10 +20,10 @@ const closeImageForm = () => {
 
   scaleValueElement.value = `${scaleValueElement.getAttribute('max')}%`;
   scaleValueElement.dispatchEvent(changeEvent);
-  plusButton.removeEventListener('click', plusSize);
-  minusButton.removeEventListener('click', minusSize);
-  scaleValueElement.removeEventListener('change', imageUpdateScale);
-  closeModalButton.removeEventListener('click', closeImageForm);
+  plusButton.removeEventListener('click', onPlusSize);
+  minusButton.removeEventListener('click', onMinusSize);
+  scaleValueElement.removeEventListener('change', onImageUpdateScale);
+  closeModalButton.removeEventListener('click', onCloseImageForm);
   document.removeEventListener('keydown', onModalEscKeydown);
   imgUploadOverlay.querySelector('.text__hashtags').value = '';
   imgUploadOverlay.querySelector('.text__description').value = '';
@@ -34,7 +34,7 @@ const closeImageForm = () => {
   uploadInput.value = '';
   uploadInput.addEventListener('change', onInputFileChange);
   imageEffectRadioButtons.forEach((radioButton) => {
-    radioButton.removeEventListener('change', makeEffect);
+    radioButton.removeEventListener('change', onMakeEffect);
   });
 };
 
@@ -47,19 +47,19 @@ const openImageForm = () => {
   const minusButton = document.querySelector('.scale__control--smaller');
   const scaleValueElement = document.querySelector('.scale__control--value');
 
-  closeModalButton.addEventListener('click', closeImageForm);
-  plusButton.addEventListener('click', plusSize);
-  minusButton.addEventListener('click', minusSize);
-  scaleValueElement.addEventListener('change', imageUpdateScale);
+  closeModalButton.addEventListener('click', onCloseImageForm);
+  plusButton.addEventListener('click', onPlusSize);
+  minusButton.addEventListener('click', onMinusSize);
+  scaleValueElement.addEventListener('change', onImageUpdateScale);
   imgUploadOverlay.classList.remove('hidden');
   bodyElement.classList.add('modal-open');
   document.addEventListener('keydown', onModalEscKeydown);
   imageEffectRadioButtons.forEach((radioButton) => {
-    radioButton.addEventListener('change', makeEffect);
+    radioButton.addEventListener('change', onMakeEffect);
   });
 };
 
-function makeEffect (evt) {
+function onMakeEffect (evt) {
   const { value, checked } = evt.target;
   if (checked) {
     if (value === 'none') {
@@ -70,9 +70,9 @@ function makeEffect (evt) {
   }
 }
 
-function onModalEscKeydown (event) {
-  if (event.keyCode === ESC_KEY_CODE) {
-    closeImageForm(event);
+function onModalEscKeydown (evt) {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    onCloseImageForm(evt);
   }
 }
 
@@ -91,12 +91,12 @@ function onInputFileChange () {
 
 uploadInput.addEventListener('change', onInputFileChange);
 
-function stopEscapeForInput (evt) {
+function onStopEscapeForInput (evt) {
   if (evt.keyCode === ESC_KEY_CODE) {
     evt.stopPropagation();
   }
 }
-uploadForm.querySelector('.text__hashtags').addEventListener('keydown', stopEscapeForInput);
-uploadForm.querySelector('.text__description').addEventListener('keydown', stopEscapeForInput);
+uploadForm.querySelector('.text__hashtags').addEventListener('keydown', onStopEscapeForInput);
+uploadForm.querySelector('.text__description').addEventListener('keydown', onStopEscapeForInput);
 
-export { closeImageForm };
+export { onCloseImageForm, onModalEscKeydown };

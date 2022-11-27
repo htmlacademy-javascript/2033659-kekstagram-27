@@ -1,7 +1,7 @@
 const scaleValueElement = document.querySelector('.scale__control--value');
 const changeEvent = new Event('change');
 
-function plusSize (evt) {
+function onPlusSize (evt) {
   evt.preventDefault();
   const currentScaleValue = +scaleValueElement.value.replace('%', '');
   const step = +scaleValueElement.getAttribute('step');
@@ -13,7 +13,7 @@ function plusSize (evt) {
   }
 }
 
-function minusSize (evt) {
+function onMinusSize (evt) {
   evt.preventDefault();
   const currentScaleValue = +scaleValueElement.value.replace('%', '');
   const step = +scaleValueElement.getAttribute('step');
@@ -25,7 +25,7 @@ function minusSize (evt) {
   }
 }
 
-function imageUpdateScale (evt) {
+function onImageUpdateScale (evt) {
   const currentScaleValue = +evt.target.value.replace('%', '');
   const max = +evt.target.getAttribute('max');
   const cssScaleNewValue = currentScaleValue >= max ? 1 : +`0.${currentScaleValue}`;
@@ -34,4 +34,4 @@ function imageUpdateScale (evt) {
   imgPreviewElement.style.transform = `scale(${cssScaleNewValue})`;
 }
 
-export { plusSize, minusSize, imageUpdateScale };
+export { onPlusSize, onMinusSize, onImageUpdateScale };

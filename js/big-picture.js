@@ -1,8 +1,9 @@
-const ESC_KEY_CODE = 27;
+import { ESC_KEY_CODE } from './util.js';
+
 const COMMENTS_AMMOUNT_TO_SHOW = 5;
-const onModalEscKeydown = (event) => {
-  if (event.keyCode === ESC_KEY_CODE) {
-    closeBigPicture(event);
+const onModalEscKeydown = (evt) => {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    onCloseBigPicture(evt);
   }
 };
 const allComments = [];
@@ -50,12 +51,12 @@ function renderComments () {
   commentsCountShowed.textContent = showedCommentsCount;
 
   if (showedCommentsCount === allComments.length) {
-    commentsLoadButton.removeEventListener('click', showMoreComments);
+    commentsLoadButton.removeEventListener('click', onShowMoreComments);
     commentsLoadButton.classList.add('hidden');
   }
 }
 
-function showMoreComments (evt) {
+function onShowMoreComments (evt) {
   evt.preventDefault();
   renderComments();
 }
@@ -85,27 +86,27 @@ function openBigPicture ({url, likes, comments, description}) {
   fillBigPicture({url, likes, comments, description});
   renderComments();
   bodyElement.classList.add('modal-open');
-  closeBigPictureButton.addEventListener('click', closeBigPicture);
+  closeBigPictureButton.addEventListener('click', onCloseBigPicture);
   document.addEventListener('keydown', onModalEscKeydown);
-  commentsLoadButton.addEventListener('click', showMoreComments);
+  commentsLoadButton.addEventListener('click', onShowMoreComments);
   bigPictureOverlay.classList.remove('hidden');
 }
 
-function closeBigPicture (event) {
-  event.preventDefault();
+function onCloseBigPicture (evt) {
+  evt.preventDefault();
   const bigPictureOverlay = document.querySelector('.big-picture');
   const bodyElement = document.querySelector('body');
   const closeBigPictureButton = bigPictureOverlay.querySelector('.big-picture__cancel');
   const commentsLoadButton = bigPictureOverlay.querySelector('.comments-loader');
 
   commentsLoadButton.classList.remove('hidden');
-  commentsLoadButton.removeEventListener('click', showMoreComments);
+  commentsLoadButton.removeEventListener('click', onShowMoreComments);
   showedCommentsCount = 0;
   allComments.splice(0, allComments.length);
 
   bodyElement.classList.remove('modal-open');
   bigPictureOverlay.classList.add('hidden');
-  closeBigPictureButton.removeEventListener('click', closeBigPicture);
+  closeBigPictureButton.removeEventListener('click', onCloseBigPicture);
   closeBigPictureButton.removeEventListener('keydown', onModalEscKeydown);
 }
 
