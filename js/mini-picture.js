@@ -10,8 +10,8 @@ function getUserPicture({url, likes, comments, description}) {
   userPicture.querySelector('.picture__img').src = url;
   userPicture.querySelector('.picture__likes').textContent = likes;
   userPicture.querySelector('.picture__comments').textContent = comments.length;
-  userPicture.addEventListener('click', (event) => {
-    event.preventDefault();
+  userPicture.addEventListener('click', (evt) => {
+    evt.preventDefault();
     openBigPicture({url, likes, comments, description});
   });
 

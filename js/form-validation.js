@@ -1,16 +1,52 @@
 import { submitData } from './api.js';
 import { showErrorMessage, showSuccessMessage } from './util.js';
-import { closeImageForm } from './user-form.js';
+import { onCloseImageForm } from './user-form.js';
+
+Pristine.addValidator(
+  'hashtag-validate',
+  (value) => {
+    const hashtagList = value.trim().split(' ');
+
+    return hashtagListValidate(hashtagList);
+  },
+  // eslint-disable-next-line
+  'Длина хэштега от ${1} до ${2} символов. Может состоять только из букв и цифр после #',
+  1,
+  true
+);
+
+Pristine.addValidator(
+  'hashtag-uniq',
+  (value) => {
+    const inputValueLowerCase = value.toLowerCase();
+    const hashtagList = inputValueLowerCase.trim().split(' ');
+
+    return areLstItemsUniq(hashtagList);
+  },
+  'Хэштеги не должны повторяться',
+  2,
+  true
+);
+
+Pristine.addValidator(
+  'hashtag-list-length',
+  (value, maxLength) => {
+    const hashtagList = value.trim().split(' ');
+
+    return hashtagList.length <= maxLength;
+  },
+  'Максимум 5 хэштегов, разделенных пробелами',
+  3,
+  true
+);
 
 const uploadForm = document.querySelector('.img-upload__form');
 const submitButton = uploadForm.querySelector('.img-upload__submit');
-const pristine = new Pristine(uploadForm);
-const HASHTAG_INPUT_VALUE_MAX_LENGTH = 420;
-const HASHTAG_LIST_MAX_LENGTH = 20;
-
-function validateMaxLength (value, maxLength) {
-  return value <= maxLength;
-}
+const pristine = new Pristine(uploadForm, {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'div'
+});
 
 function hashtagListValidate (hashtagList) {
   return hashtagList.reduce(
@@ -21,11 +57,13 @@ function hashtagListValidate (hashtagList) {
 
 function validateHashtag (hashtag) {
   const hashtagRegex = /^#[a-zа-яё0-9]{1,19}$/i;
+
   return hashtagRegex.test(hashtag);
 }
 
 function areLstItemsUniq (list) {
   const listObject = {};
+
   list.forEach((listItem) => {
     if (listObject[listItem]) {
       listObject[listItem] += 1;
@@ -33,33 +71,9 @@ function areLstItemsUniq (list) {
       listObject[listItem] = 1;
     }
   });
+
   return Object.values(listObject).every((value) => value === 1);
 }
-
-function validateHashtagInputValue (inputValue = '') {
-  if (inputValue.trim() === '') {
-    return true;
-  }
-
-  const inputValueLowerCase = inputValue.toLowerCase();
-  const hashtagList = inputValueLowerCase.trim().split(' ');
-
-  return (
-    validateMaxLength(inputValue.length, HASHTAG_INPUT_VALUE_MAX_LENGTH)
-    && validateMaxLength(hashtagList.length, HASHTAG_LIST_MAX_LENGTH)
-    && areLstItemsUniq(hashtagList)
-    && hashtagListValidate(hashtagList)
-  );
-}
-
-pristine.addValidator(
-  uploadForm.querySelector('.text__hashtags'),
-  validateHashtagInputValue
-);
-pristine.addValidator(
-  uploadForm.querySelector('.text__description'),
-  (value) => value.length <= 140
-);
 
 const blockSubmitButton = () => {
   submitButton.disabled = true;
@@ -75,6 +89,7 @@ uploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
+
   if (isValid) {
     blockSubmitButton();
     submitData(
@@ -82,7 +97,7 @@ uploadForm.addEventListener('submit', (evt) => {
       new FormData(evt.target),
       () => {
         unblockSubmitButton();
-        closeImageForm();
+        onCloseImageForm();
         showSuccessMessage();
       },
       () => {

@@ -73,7 +73,7 @@ function handleFilterApply (buttonElement) {
   }
 }
 
-function filterButtonsClickHandler (evt) {
+function onFilterButtonsClickHandler (evt) {
   const buttonActiveCssClass = 'img-filters__button--active';
   if (!evt.target.classList.contains(buttonActiveCssClass)) {
     const debouncedHandler = debounce(
@@ -91,5 +91,5 @@ function filterButtonsClickHandler (evt) {
   }
 }
 
-filterButtons.forEach((button) => button.addEventListener('click', filterButtonsClickHandler));
+filterButtons.forEach((button) => button.addEventListener('click', onFilterButtonsClickHandler));
 

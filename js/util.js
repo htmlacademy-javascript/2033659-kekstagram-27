@@ -1,7 +1,9 @@
+import { onModalEscKeydown } from './user-form.js';
+
 const ESC_KEY_CODE = 27;
-const onShowedMessageEscKeydown = (event) => {
-  if (event.keyCode === ESC_KEY_CODE) {
-    closeMessage(event);
+const onShowedMessageEscKeydown = (evt) => {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    onCloseMessage(evt);
   }
 };
 const getRndInteger = function (min, max) {
@@ -30,7 +32,7 @@ function showSuccessMessage () {
   const successButton = successMessageBlock.querySelector('.success__button');
 
   successMessageBlock.classList.add('showed-message');
-  successButton.addEventListener('click', closeMessage);
+  successButton.addEventListener('click', onCloseMessage);
   document.addEventListener('click', onOutsideClickCloseMessage);
   document.addEventListener('keydown', onShowedMessageEscKeydown);
   document.querySelector('body').appendChild(successMessageBlock);
@@ -41,24 +43,35 @@ function showErrorMessage () {
   const errorButton = errorMessageBlock.querySelector('.error__button');
 
   errorMessageBlock.classList.add('showed-message');
-  errorButton.addEventListener('click', closeMessage);
+  errorButton.addEventListener('click', onCloseErrorMessage);
   document.addEventListener('click', onOutsideClickCloseMessage);
+  document.removeEventListener('keydown', onModalEscKeydown);
   document.addEventListener('keydown', onShowedMessageEscKeydown);
   document.querySelector('body').appendChild(errorMessageBlock);
 }
 
 function onOutsideClickCloseMessage (evt) {
   if (document.querySelector('.showed-message').contains(evt.target)) {
-    closeMessage(evt);
+    onCloseMessage(evt);
   }
 }
 
-function closeMessage (evt) {
+function onCloseMessage (evt) {
   evt.preventDefault();
   const showedSuccessMessage = document.querySelector('.showed-message');
   showedSuccessMessage.parentNode.removeChild(showedSuccessMessage);
   document.removeEventListener('click', onOutsideClickCloseMessage);
   document.removeEventListener('keydown', onShowedMessageEscKeydown);
+  document.addEventListener('keydown', onModalEscKeydown);
+}
+
+function onCloseErrorMessage (evt) {
+  evt.preventDefault();
+  const showedSuccessMessage = document.querySelector('.showed-message');
+  showedSuccessMessage.parentNode.removeChild(showedSuccessMessage);
+  document.removeEventListener('click', onOutsideClickCloseMessage);
+  document.removeEventListener('keydown', onShowedMessageEscKeydown);
+  document.addEventListener('keydown', onModalEscKeydown);
 }
 
 function debounce (callback, timeoutDelay = 500) {
@@ -100,4 +113,4 @@ function throttle (callback, delayBetweenFrames) {
   };
 }
 
-export { getRndInteger, checkStringLength, showErrorMessage, showSuccessMessage, debounce, throttle };
+export { getRndInteger, checkStringLength, showErrorMessage, showSuccessMessage, debounce, throttle, ESC_KEY_CODE };
